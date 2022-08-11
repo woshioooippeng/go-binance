@@ -52,13 +52,13 @@ type WsPartialDepthHandler func(event *WsPartialDepthEvent)
 
 // WsPartialDepthServe serve websocket partial depth handler with a symbol, using 1sec updates
 func WsPartialDepthServe(symbol string, levels string, handler WsPartialDepthHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	endpoint := fmt.Sprintf("%s/%s@depth%s", getWsEndpoint(), strings.ToLower(symbol), levels)
+	endpoint := fmt.Sprintf("%s/%s@depth10%s", getWsEndpoint(), strings.ToLower(symbol), levels)
 	return wsPartialDepthServe(endpoint, symbol, handler, errHandler)
 }
 
 // WsPartialDepthServe100Ms serve websocket partial depth handler with a symbol, using 100msec updates
 func WsPartialDepthServe100Ms(symbol string, levels string, handler WsPartialDepthHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	endpoint := fmt.Sprintf("%s/%s@depth%s@100ms", getWsEndpoint(), strings.ToLower(symbol), levels)
+	endpoint := fmt.Sprintf("%s/%s@depth10%s@100ms", getWsEndpoint(), strings.ToLower(symbol), levels)
 	return wsPartialDepthServe(endpoint, symbol, handler, errHandler)
 }
 
@@ -101,7 +101,7 @@ func wsPartialDepthServe(endpoint string, symbol string, handler WsPartialDepthH
 func WsCombinedPartialDepthServe(symbolLevels map[string]string, handler WsPartialDepthHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for s, l := range symbolLevels {
-		endpoint += fmt.Sprintf("%s@depth%s", strings.ToLower(s), l) + "/"
+		endpoint += fmt.Sprintf("%s@depth10%s", strings.ToLower(s), l) + "/"
 	}
 	endpoint = endpoint[:len(endpoint)-1]
 	cfg := newWsConfig(endpoint)
@@ -209,7 +209,7 @@ type WsDepthEvent struct {
 func WsCombinedDepthServe(symbols []string, handler WsDepthHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for _, s := range symbols {
-		endpoint += fmt.Sprintf("%s@depth", strings.ToLower(s)) + "/"
+		endpoint += fmt.Sprintf("%s@depth10", strings.ToLower(s)) + "/"
 	}
 	endpoint = endpoint[:len(endpoint)-1]
 	return wsCombinedDepthServe(endpoint, handler, errHandler)
@@ -218,7 +218,7 @@ func WsCombinedDepthServe(symbols []string, handler WsDepthHandler, errHandler E
 func WsCombinedDepthServe100Ms(symbols []string, handler WsDepthHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for _, s := range symbols {
-		endpoint += fmt.Sprintf("%s@depth@100ms", strings.ToLower(s)) + "/"
+		endpoint += fmt.Sprintf("%s@depth10@100ms", strings.ToLower(s)) + "/"
 	}
 	endpoint = endpoint[:len(endpoint)-1]
 	return wsCombinedDepthServe(endpoint, handler, errHandler)
